@@ -12,7 +12,7 @@ services:
           name: datahub
           property: connectionString
       - key: APP_SECRET
-        generatedValue: true
+        generateValue: true
 databases:
   - name: datahub
     databaseName: datahub
