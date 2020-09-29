@@ -1,0 +1,38 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteModel",
+      "model": "Application"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Device",
+      "field": "ttnDeviceId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Device",
+      "field": "ttnAppId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Device",
+      "field": "Application"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Device",
+      "field": "applicationId"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Device",
+      "field": "name"
+    }
+  ]
+}

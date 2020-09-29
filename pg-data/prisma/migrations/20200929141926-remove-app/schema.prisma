@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// this is for the harvester to be able to login
+model User {
+  id        Int      @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  username  String   @unique
+  password  String
+}
+
+model Device {
+  id Int @default(autoincrement()) @id
+
+  ttnDeviceId String
+  ttnAppId    String
+  description String?
+  records     Record[]
+  // possible more MetdData
+  // location
+  // SSID
+  // foo
+  // Cake
+}
+
+model Record {
+
+  id    Int    @default(autoincrement()) @id
+  value String // could also be a Float?
+
+  recordedAt DateTime
+  Device     Device?  @relation(fields: [deviceId], references: [id])
+  deviceId   Int?
+}
