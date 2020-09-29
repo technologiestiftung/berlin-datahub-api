@@ -106,3 +106,15 @@ export const getRecordById: HandlerFunction = async (_request, response) => {
   const record = response.locals.record as Record;
   response.json(createPayload({ record }));
 };
+
+export const signup: HandlerFunction = async (request, response) => {
+  response.status(201).json({ token: "", user: {} });
+};
+
+export const login: HandlerFunction = async (request, response) => {
+  response.status(201).json({ token: "", user: {} });
+};
+
+export const profile: HandlerFunction = async (request, response) => {
+  response.status(201).json({ token: "", user: {} });
+};
