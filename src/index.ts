@@ -7,17 +7,15 @@ import {
   errorHandler,
 } from "./lib/utils";
 import {
-  getApplicationById,
-  getApplications,
   getDeviceById,
   getDevices,
   getRecordById,
   getRecords,
-  postApplication,
   postDevice,
   postRecord,
+  postRecordByTTNId,
 } from "./lib/request-handlers";
-import { applicationCheck, deviceCheck, recordCheck } from "./lib/middlewares";
+import { deviceCheck, recordCheck } from "./lib/middlewares";
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -30,45 +28,32 @@ app.get("/api/healthcheck", (req, res) => {
   res.json({ status: "active" });
 });
 
-app.get("/api/applications", asyncWrapper(getApplications));
-app.post("/api/applications", asyncWrapper(postApplication));
+app.get("/api/devices", asyncWrapper(getDevices));
+app.post("/api/devices", asyncWrapper(postDevice));
 app.get(
-  "/api/applications/:appId([0-9]+)",
-  asyncMiddlewareWrapper(applicationCheck),
-  asyncWrapper(getApplicationById),
-);
-
-app.get(
-  "/api/applications/:appId([0-9]+)/devices",
-  asyncMiddlewareWrapper(applicationCheck),
-  asyncWrapper(getDevices),
-);
-app.post(
-  "/api/applications/:appId([0-9]+)/devices",
-  asyncMiddlewareWrapper(applicationCheck),
-  asyncWrapper(postDevice),
-);
-app.get(
-  "/api/applications/:appId([0-9]+)/devices/:deviceId([0-9]+)",
-  asyncMiddlewareWrapper(applicationCheck),
+  "/api//devices/:deviceId([0-9]+)",
   asyncMiddlewareWrapper(deviceCheck),
   asyncWrapper(getDeviceById),
 );
 app.get(
-  "/api/applications/:appId([0-9]+)/devices/:deviceId([0-9]+)/records",
-  asyncMiddlewareWrapper(applicationCheck),
+  "/api/devices/:deviceId([0-9]+)/records",
   asyncMiddlewareWrapper(deviceCheck),
   asyncWrapper(getRecords),
 );
 app.post(
-  "/api/applications/:appId([0-9]+)/devices/:deviceId([0-9]+)/records",
-  asyncMiddlewareWrapper(applicationCheck),
+  "/api/devices/:deviceId([0-9]+)/records",
   asyncMiddlewareWrapper(deviceCheck),
   asyncWrapper(postRecord),
 );
+
+app.post(
+  "/api/devices/insert-record-by-ttn-device-id",
+  // asyncMiddlewareWrapper(deviceCheck),
+  asyncWrapper(postRecordByTTNId),
+);
+
 app.get(
-  "/api/applications/:appId([0-9]+)/devices/:deviceId([0-9]+)/records/:recordId([0-9]+)",
-  asyncMiddlewareWrapper(applicationCheck),
+  "/api/devices/:deviceId([0-9]+)/records/:recordId([0-9]+)",
   asyncMiddlewareWrapper(deviceCheck),
   asyncMiddlewareWrapper(recordCheck),
   asyncWrapper(getRecordById),

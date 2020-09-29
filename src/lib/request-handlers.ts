@@ -80,6 +80,39 @@ export const getRecords: HandlerFunction = async (_request, response) => {
   response.status(201).json(createPayload({ records }));
 };
 
+export const postRecordByTTNId: HandlerFunction = async (request, response) => {
+  const { ttnDeviceId, value, recordedAt } = request.body;
+  if (!ttnDeviceId && typeof ttnDeviceId !== "string") {
+    throw createError(400, `ttn device id not defined or not a string`);
+  }
+  if (!value && typeof value !== "string") {
+    throw createError(400, `record value is not defined or not a string`);
+  }
+  if (!recordedAt && typeof recordedAt !== "string") {
+    throw createError(
+      400,
+      `record value is not defined or not a string should be parsable as ISOString e.g. const str = new Date("2020-10-10").toISOString()
+      `,
+    );
+  }
+
+  const devices = await prisma.device.findMany({
+    where: { ttnDeviceId: ttnDeviceId },
+  });
+  console.log(devices);
+  if (devices.length === 0) {
+    throw createError(
+      400,
+      `This device does not exist
+      `,
+    );
+  }
+
+  const record = await prisma.record.create({
+    data: { value, recordedAt, Device: { connect: { id: devices[0].id } } },
+  });
+  response.json(createPayload({ record }));
+};
 export const postRecord: HandlerFunction = async (request, response) => {
   const { value, recordedAt } = request.body;
   if (!value && typeof value !== "string") {
