@@ -11,24 +11,6 @@ export type MiddlewareFunction = (
 ) => Promise<void>;
 
 /**
- * Middleware that checks for existing applications
- * Needs the asyncMiddlewareWrapper to work
- */
-export const applicationCheck: MiddlewareFunction = async (
-  request,
-  response,
-  next,
-) => {
-  const id = parseInt(request.params.appId);
-  const application = await prisma.application.findOne({ where: { id: id } });
-  if (!application) {
-    throw createError(404, `application with id ${id} does not exists`);
-  }
-  response.locals.application = application;
-  next();
-};
-
-/**
  * Middleware that checks for existing devices
  * Needs the asyncMiddlewareWrapper to work
  */
