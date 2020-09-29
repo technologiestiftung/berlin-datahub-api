@@ -55,7 +55,7 @@ export const authCheck: MiddlewareFunction = async (
   next,
 ) => {
   if (!request.headers.authorization) {
-    throw createError(404, `No credentials provided`);
+    throw createError(401, `No credentials provided`);
   }
   const token = request.headers.authorization.split(" ")[1];
 
