@@ -1,3 +1,4 @@
+import createError from "http-errors";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -78,7 +79,13 @@ app.get(
 // });
 
 // or const { PrismaClient } = require('@prisma/client')
-
+/**
+ * Falltrhough cases
+ *
+ */
+app.use((req, res, next) => {
+  next(createError(404));
+});
 app.use(errorHandler);
 
 app.listen(PORT, () => {
