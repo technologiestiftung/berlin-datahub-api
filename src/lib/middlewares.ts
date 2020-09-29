@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Response, Request } from "express";
+import { verify } from "jsonwebtoken";
+
 import createError from "http-errors";
 
+const APP_SECRET = process.env.APP_SECRET || "superdupersecret";
 const prisma = new PrismaClient();
 
 export type MiddlewareFunction = (
@@ -43,5 +46,23 @@ export const recordCheck: MiddlewareFunction = async (
     throw createError(404, `record with id ${id} does not exists`);
   }
   response.locals.record = record;
+  next();
+};
+
+export const authCheck: MiddlewareFunction = async (
+  request,
+  response,
+  next,
+) => {
+  if (!request.headers.authorization) {
+    throw createError(404, `No credentials provided`);
+  }
+  const token = request.headers.authorization.split(" ")[1];
+
+  const decoded = verify(token, APP_SECRET);
+  if (!decoded) {
+    throw createError(404, `token invalid`);
+  }
+  response.locals.decoded = decoded;
   next();
 };

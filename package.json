@@ -16,16 +16,20 @@
   "devDependencies": {
     "@inpyjamas/scripts": "0.1.8-alpha",
     "@prisma/cli": "2.7.1",
+    "@types/bcrypt": "3.0.0",
     "@types/cors": "2.8.7",
     "@types/express": "4.17.8",
     "@types/http-errors": "1.8.0",
+    "@types/jsonwebtoken": "8.5.0",
     "@types/morgan": "1.9.1"
   },
   "dependencies": {
     "@prisma/client": "2.7.1",
+    "bcrypt": "5.0.0",
     "cors": "2.8.5",
     "express": "4.17.1",
     "http-errors": "1.8.0",
+    "jsonwebtoken": "8.5.1",
     "morgan": "1.10.0"
   }
 }

@@ -1,12 +1,19 @@
+import { hash, compare } from "bcrypt";
+import { sign, SignOptions } from "jsonwebtoken";
 import createError from "http-errors";
 import { PrismaClient, Device, Record } from "@prisma/client";
-import { Handler, Request, response, Response } from "express";
+import { Handler, Request, Response } from "express";
 import _ from "lodash";
 import { createPayload } from "./utils";
 const prisma = new PrismaClient();
+const APP_SECRET = process.env.APP_SECRET || "superdupersecret";
 
 type HandlerFunction = (request: Request, response: Response) => Promise<void>;
 
+const tokenSignOpts: SignOptions = {
+  algorithm: "HS256",
+  expiresIn: "7d",
+};
 // export const getApplications: HandlerFunction = async (_request, response) => {
 //   const applications = await prisma.application.findMany();
 //   response.json(createPayload({ applications }));
@@ -143,13 +150,64 @@ export const getRecordById: HandlerFunction = async (_request, response) => {
 };
 
 export const signup: HandlerFunction = async (request, response) => {
-  response.status(201).json({ token: "", user: {} });
+  const { username, password } = request.body;
+
+  if (!username && typeof username !== "string") {
+    throw createError(400, "username not provided or not a string");
+  }
+  if (!password && typeof password !== "string") {
+    throw createError(400, "password not provided or not a string");
+  }
+  const hashedPassword = await hash(password, 10);
+  const user = await prisma.user.create({
+    data: { username, password: hashedPassword },
+  });
+
+  const token = sign({ userId: user.id }, APP_SECRET, tokenSignOpts);
+  response
+    .status(201)
+    .json(
+      createPayload({ user: { id: user.id, username: user.username }, token }),
+    );
 };
 
 export const login: HandlerFunction = async (request, response) => {
-  response.status(201).json({ token: "", user: {} });
+  const { username, password } = request.body;
+  if (!username && typeof username !== "string") {
+    throw createError(400, "username not provided or not a string");
+  }
+  if (!password && typeof password !== "string") {
+    throw createError(400, "password not provided or not a string");
+  }
+  const user = await prisma.user.findOne({
+    where: {
+      username,
+    },
+  });
+  if (!user) {
+    throw createError(401, `No user found for email: ${username}`);
+  }
+  const passwordValid = await compare(password, user.password);
+  if (!passwordValid) {
+    throw createError(401, `invalid password`);
+  }
+  const token = sign({ userId: user.id }, APP_SECRET, tokenSignOpts);
+
+  response
+    .status(201)
+    .json(
+      createPayload({ user: { id: user.id, username: user.username }, token }),
+    );
 };
 
 export const profile: HandlerFunction = async (request, response) => {
-  response.status(201).json({ user: {} });
+  console.log(response.locals.decoded);
+  const { userId } = response.locals.decoded;
+  const user = await prisma.user.findOne({ where: { id: userId } });
+  if (!user) {
+    throw createError(401, "not authorized");
+  }
+  response
+    .status(200)
+    .json(createPayload({ user: { username: user.username, id: user.id } }));
 };

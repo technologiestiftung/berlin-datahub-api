@@ -12,11 +12,14 @@ import {
   getDevices,
   getRecordById,
   getRecords,
+  login,
   postDevice,
   postRecord,
   postRecordByTTNId,
+  profile,
+  // signup,
 } from "./lib/request-handlers";
-import { deviceCheck, recordCheck } from "./lib/middlewares";
+import { authCheck, deviceCheck, recordCheck } from "./lib/middlewares";
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -43,7 +46,11 @@ app.get("/api/healthcheck", (req, res) => {
 });
 
 app.get("/api/devices", asyncWrapper(getDevices));
-app.post("/api/devices", asyncWrapper(postDevice));
+app.post(
+  "/api/devices",
+  asyncMiddlewareWrapper(authCheck),
+  asyncWrapper(postDevice),
+);
 app.get(
   "/api//devices/:deviceId([0-9]+)",
   asyncMiddlewareWrapper(deviceCheck),
@@ -56,6 +63,7 @@ app.get(
 );
 app.post(
   "/api/devices/:deviceId([0-9]+)/records",
+  asyncMiddlewareWrapper(authCheck),
   asyncMiddlewareWrapper(deviceCheck),
   asyncWrapper(postRecord),
 );
@@ -63,6 +71,7 @@ app.post(
 app.post(
   "/api/devices/insert-record-by-ttn-device-id",
   // asyncMiddlewareWrapper(deviceCheck),
+  asyncMiddlewareWrapper(authCheck),
   asyncWrapper(postRecordByTTNId),
 );
 
@@ -73,18 +82,21 @@ app.get(
   asyncWrapper(getRecordById),
 );
 
-// TODO: Catch all
-// app.get("/api/records-by-app-id/", (req, res) => {
-//   const appId = req.query.appId;
-// });
+// app.post("/api/signup", asyncWrapper(signup));
+app.post("/api/login", asyncWrapper(login));
+app.get(
+  "/api/profile",
+  asyncMiddlewareWrapper(authCheck),
+  asyncWrapper(profile),
+);
 
 // or const { PrismaClient } = require('@prisma/client')
 /**
  * Falltrhough cases
  *
  */
-app.use((req, res, next) => {
-  next(createError(404));
+app.use((_req, _res, next) => {
+  next(createError(404, "wrong route"));
 });
 app.use(errorHandler);
 
