@@ -1,0 +1,13 @@
+version: "3.4"
+
+services:
+  postgres:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testing
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pg-data/testing:/var/lib/postgresql/data

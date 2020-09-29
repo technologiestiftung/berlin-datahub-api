@@ -1,0 +1,31 @@
+{
+  "name": "berlin-datahub-api",
+  "version": "0.0.1",
+  "description": "An Express REST API for the berlin datahub project",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "inpyjamas-scripts test",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "prebuild": "prisma generate",
+    "build": "tsc -p .",
+    "prisma:migration:save": "prisma migrate save --experimental",
+    "prisma:migration:up": "prisma migrate up --experimental"
+  },
+  "author": "Fabian Morón Zirfas <fabianmoronzirfas@protonmail.ch> (https://fabianmoronzirfas.me)",
+  "license": "MIT",
+  "devDependencies": {
+    "@inpyjamas/scripts": "0.1.8-alpha",
+    "@prisma/cli": "2.7.1",
+    "@types/cors": "2.8.7",
+    "@types/express": "4.17.8",
+    "@types/http-errors": "1.8.0",
+    "@types/morgan": "1.9.1"
+  },
+  "dependencies": {
+    "@prisma/client": "2.7.1",
+    "cors": "2.8.5",
+    "express": "4.17.1",
+    "http-errors": "1.8.0",
+    "morgan": "1.10.0"
+  }
+}
