@@ -22,7 +22,20 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
+// make morgan skip the healthcheck https://github.com/expressjs/morgan#skip
+
+const logType = process.env.NODE_ENV === "development" ? "dev" : "combined";
+app.use(
+  morgan(logType, {
+    skip: function (req, _res) {
+      if (req.url == "/api/healthcheck") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  }),
+);
 
 app.get("/api/healthcheck", (req, res) => {
   res.json({ status: "active" });
