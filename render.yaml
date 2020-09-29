@@ -1,0 +1,19 @@
+services:
+  - type: web
+    region: frankfurt
+    name: berlin-datahub-api
+    env: node
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/index.js
+    healthCheckPath: /api/healthcheck
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: datahub
+          property: connectionString
+      - key: APP_SECRET
+        generatedValue: true
+databases:
+  - name: datahub
+    databaseName: datahub
+    region: frankfurt
