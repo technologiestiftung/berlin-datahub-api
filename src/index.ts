@@ -74,6 +74,7 @@ app.get(
   asyncWrapper(getRecordById),
 );
 
+// TODO: Catch all
 // app.get("/api/records-by-app-id/", (req, res) => {
 //   const appId = req.query.appId;
 // });

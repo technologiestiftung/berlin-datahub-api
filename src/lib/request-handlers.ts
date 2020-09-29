@@ -116,5 +116,5 @@ export const login: HandlerFunction = async (request, response) => {
 };
 
 export const profile: HandlerFunction = async (request, response) => {
-  response.status(201).json({ token: "", user: {} });
+  response.status(201).json({ user: {} });
 };
