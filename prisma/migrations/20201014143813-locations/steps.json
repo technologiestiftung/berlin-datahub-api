@@ -1,0 +1,19 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Device",
+      "field": "latitude",
+      "type": "Float",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Device",
+      "field": "longitude",
+      "type": "Float",
+      "arity": "Optional"
+    }
+  ]
+}
