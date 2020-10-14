@@ -5,6 +5,7 @@ import morgan from "morgan";
 import {
   asyncMiddlewareWrapper,
   asyncWrapper,
+  createPayload,
   errorHandler,
 } from "./lib/utils";
 import {
@@ -16,7 +17,9 @@ import {
   postDevice,
   postRecord,
   postRecordByTTNId,
+  postRecordsFromTTNHTTPIntegration,
   profile,
+  signup,
   // signup,
 } from "./lib/request-handlers";
 import { authCheck, deviceCheck, recordCheck } from "./lib/middlewares";
@@ -80,6 +83,31 @@ app.get(
   asyncMiddlewareWrapper(deviceCheck),
   asyncMiddlewareWrapper(recordCheck),
   asyncWrapper(getRecordById),
+);
+
+// app.post(
+//   "/api/ttn-http-integration",
+//   asyncMiddlewareWrapper(authCheck),
+//   asyncWrapper(async (request, response) => {
+//     console.log("headers", request.headers);
+//     console.log("body", request.body);
+//     const { payload_raw } = request.body;
+//     const buff = Buffer.from(payload_raw, "base64");
+//     const data = buff.toString("hex");
+//     // type EncodingType = "hex" | "utf8";
+//     // const convert = (from: EncodingType, to: EncodingType) => (str: string) =>
+//     //   Buffer.from(str, from).toString(to);
+//     // const utf8ToHex = convert("utf8", "hex");
+//     // const hexToUtf8 = convert("hex", "utf8");
+//     console.log("data", data);
+//     response.json(createPayload({ message: "data received" }));
+//   }),
+// );
+
+app.post(
+  "/api/ttn-http-integration",
+  asyncMiddlewareWrapper(authCheck),
+  asyncWrapper(postRecordsFromTTNHTTPIntegration),
 );
 
 // app.post("/api/signup", asyncWrapper(signup));

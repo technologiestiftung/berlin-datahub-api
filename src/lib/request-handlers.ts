@@ -5,6 +5,7 @@ import { PrismaClient, Device, Record } from "@prisma/client";
 import { Handler, Request, Response } from "express";
 import _ from "lodash";
 import { createPayload } from "./utils";
+import { TTNHTTPPayload } from "../common/interfaces";
 const prisma = new PrismaClient();
 const APP_SECRET = process.env.APP_SECRET || "superdupersecret";
 
@@ -12,7 +13,7 @@ type HandlerFunction = (request: Request, response: Response) => Promise<void>;
 
 const tokenSignOpts: SignOptions = {
   algorithm: "HS256",
-  expiresIn: "7d",
+  // expiresIn: "7d",
 };
 // export const getApplications: HandlerFunction = async (_request, response) => {
 //   const applications = await prisma.application.findMany();
@@ -87,6 +88,58 @@ export const getRecords: HandlerFunction = async (_request, response) => {
     where: { deviceId: device.id },
   });
   response.status(201).json(createPayload({ records }));
+};
+
+export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
+  request,
+  response,
+) => {
+  const {
+    app_id,
+    dev_id,
+    port,
+    counter,
+    payload_raw,
+    payload_fields,
+    metadata,
+  } = request.body as Partial<TTNHTTPPayload>;
+
+  const devices = await prisma.device.findMany({
+    where: { ttnDeviceId: dev_id },
+  });
+  console.log(devices);
+  if (devices.length === 0) {
+    throw createError(
+      400,
+      `This device does not exist
+      `,
+    );
+  }
+
+  // update lat lon of the device
+  if (metadata?.latitude) {
+    if (metadata.longitude) {
+      await prisma.device.update({
+        where: { id: devices[0].id },
+        data: {
+          latitude: metadata.latitude,
+          longitude: metadata.longitude,
+        },
+      });
+    }
+  }
+
+  if (!payload_fields?.value || !metadata?.time) {
+    throw createError(400, `Time or value not provided`);
+  }
+  const record = await prisma.record.create({
+    data: {
+      value: payload_fields?.value,
+      recordedAt: metadata.time,
+      Device: { connect: { id: devices[0].id } },
+    },
+  });
+  response.json(createPayload({ record }));
 };
 
 export const postRecordByTTNId: HandlerFunction = async (request, response) => {
@@ -171,6 +224,11 @@ export const signup: HandlerFunction = async (request, response) => {
     );
 };
 
+/**
+ * handles user login and returns token if user and password match
+ *
+ *
+ */
 export const login: HandlerFunction = async (request, response) => {
   const { username, password } = request.body;
   if (!username && typeof username !== "string") {
