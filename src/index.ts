@@ -52,7 +52,7 @@ app.post(
   asyncWrapper(postDevice),
 );
 app.get(
-  "/api//devices/:deviceId([0-9]+)",
+  "/api/devices/:deviceId([0-9]+)",
   asyncMiddlewareWrapper(deviceCheck),
   asyncWrapper(getDeviceById),
 );
