@@ -12,19 +12,21 @@ generator client {
 
 // this is for the harvester to be able to login
 model User {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   username  String   @unique
   password  String
 }
 
 model Device {
-  id Int @default(autoincrement()) @id
+  id Int @id @default(autoincrement())
 
   ttnDeviceId String
   ttnAppId    String
   description String?
   records     Record[]
+  latitude    Float?
+  longitude   Float?
   // possible more MetdData
   // location
   // SSID
@@ -34,8 +36,8 @@ model Device {
 
 model Record {
 
-  id    Int    @default(autoincrement()) @id
-  value String // could also be a Float?
+  id    Int   @id @default(autoincrement())
+  value Float // could also be a Float?
 
   recordedAt DateTime
   Device     Device?  @relation(fields: [deviceId], references: [id])
