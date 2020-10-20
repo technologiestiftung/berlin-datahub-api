@@ -60,10 +60,11 @@ export const getDevices: HandlerFunction = async (_request, response) => {
 export const postDevice: Handler = async (request, response) => {
   // const application = response.locals.application as Application;
   const { description, ttnDeviceId, ttnAppId } = request.body;
-  if (!ttnDeviceId || typeof name !== "string") {
+
+  if (!ttnDeviceId || typeof ttnDeviceId !== "string") {
     throw createError(400, `device ttnDeviceId is not defined or not a string`);
   }
-  if (!ttnAppId || typeof name !== "string") {
+  if (!ttnAppId || typeof ttnAppId !== "string") {
     throw createError(400, `device ttnAppId is not defined or not a string`);
   }
 
