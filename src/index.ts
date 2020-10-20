@@ -110,7 +110,9 @@ app.post(
   asyncWrapper(postRecordsFromTTNHTTPIntegration),
 );
 
+// corrently this is not available in production
 // app.post("/api/signup", asyncWrapper(signup));
+
 app.post("/api/login", asyncWrapper(login));
 app.get(
   "/api/profile",
