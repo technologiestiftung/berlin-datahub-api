@@ -5,7 +5,7 @@ services:
     name: berlin-datahub-api
     env: node
     buildCommand: NODE_ENV=development npm ci && npm run build
-    startCommand: NODE_ENV=production node dist/index.js
+    startCommand: node dist/index.js
     healthCheckPath: /api/healthcheck
     envVars:
       - key: NODE_ENV
