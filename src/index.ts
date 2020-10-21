@@ -5,7 +5,6 @@ import morgan from "morgan";
 import {
   asyncMiddlewareWrapper,
   asyncWrapper,
-  createPayload,
   errorHandler,
 } from "./lib/utils";
 import {
@@ -19,13 +18,16 @@ import {
   postRecordByTTNId,
   postRecordsFromTTNHTTPIntegration,
   profile,
-  signup,
   // signup,
 } from "./lib/request-handlers";
 import { authCheck, deviceCheck, recordCheck } from "./lib/middlewares";
+import helmet from "helmet";
+
 const app = express();
 const PORT = process.env.PORT || 4000;
-
+if (process.env.NODE_ENV === "production") {
+  app.use(helmet());
+}
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
