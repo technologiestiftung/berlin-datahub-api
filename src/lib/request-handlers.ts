@@ -108,7 +108,6 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
   const devices = await prisma.device.findMany({
     where: { ttnDeviceId: dev_id },
   });
-  console.log(devices);
   if (devices.length === 0) {
     throw createError(
       400,
@@ -162,7 +161,6 @@ export const postRecordByTTNId: HandlerFunction = async (request, response) => {
   const devices = await prisma.device.findMany({
     where: { ttnDeviceId: ttnDeviceId },
   });
-  console.log(devices);
   if (devices.length === 0) {
     throw createError(
       400,
@@ -260,7 +258,6 @@ export const login: HandlerFunction = async (request, response) => {
 };
 
 export const profile: HandlerFunction = async (request, response) => {
-  console.log(response.locals.decoded);
   const { userId } = response.locals.decoded;
   const user = await prisma.user.findOne({ where: { id: userId } });
   if (!user) {
