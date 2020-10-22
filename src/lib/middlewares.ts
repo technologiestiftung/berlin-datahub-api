@@ -1,10 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import { NextFunction, Response, Request } from "express";
 import { verify } from "jsonwebtoken";
 
 import createError from "http-errors";
 import { APP_SECRET } from "./envs";
-const prisma = new PrismaClient();
+import { prisma } from "./prisma";
+// const prisma = new PrismaClient();
 
 export type MiddlewareFunction = (
   request: Request,
@@ -70,7 +71,8 @@ export const authCheck: MiddlewareFunction = async (
   if (!request.headers.authorization) {
     throw createError(401, `No credentials provided`);
   }
-  // console.log(request.headers.authorization);
+  console.log(request.headers.authorization);
+  console.log("APP_SECRET", APP_SECRET);
   const token = request.headers.authorization.split(" ")[1];
 
   const decoded = verify(token, APP_SECRET);

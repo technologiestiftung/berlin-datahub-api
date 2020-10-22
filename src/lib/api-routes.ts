@@ -1,5 +1,12 @@
 import { Router } from "express";
 import {
+  getDevicesFromProject,
+  getDevices,
+  postDevice,
+  getDeviceById,
+} from "./request-handlers/devices";
+import { getProjects, postProject } from "./request-handlers/projects";
+import {
   authCheck,
   deviceCheck,
   projectCheck,
@@ -7,22 +14,13 @@ import {
 } from "./middlewares";
 import { generalLimiter, signupLimiter, loginLimiter } from "./rate-limiters";
 import {
-  getDevices,
-  postDevice,
-  getDeviceById,
   getRecords,
   postRecord,
   getRecordById,
-  postRecordByTTNId,
   postRecordsFromTTNHTTPIntegration,
-  login,
-  profile,
-  getProjects,
-  postProject,
-  signup,
-  getDevicesFromProject,
-} from "./request-handlers";
+} from "./request-handlers/records";
 import { asyncWrapper, asyncMiddlewareWrapper } from "./utils";
+import { signup, login, profile } from "./request-handlers/users";
 
 export const router = Router();
 
