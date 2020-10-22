@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { NextFunction, Response, Request, request } from "express";
+import { NextFunction, Response, Request } from "express";
 import { verify } from "jsonwebtoken";
 
 import createError from "http-errors";
