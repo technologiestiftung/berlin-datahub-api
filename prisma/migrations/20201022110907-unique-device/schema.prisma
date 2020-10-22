@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -24,7 +24,7 @@ model Project {
   description String
   title       String
   city        String?
-  ttnAppId    String?  @unique
+  ttnAppId    String?
   devices     Device[]
   User        User?    @relation(fields: [userId], references: [id])
   userId      Int?
@@ -34,6 +34,7 @@ model Device {
   id Int @id @default(autoincrement())
 
   ttnDeviceId String   @unique
+  ttnAppId    String
   description String?
   records     Record[]
   latitude    Float?
