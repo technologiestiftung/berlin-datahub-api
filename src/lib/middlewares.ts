@@ -71,8 +71,8 @@ export const authCheck: MiddlewareFunction = async (
   if (!request.headers.authorization) {
     throw createError(401, `No credentials provided`);
   }
-  console.log(request.headers.authorization);
-  console.log("APP_SECRET", APP_SECRET);
+  // console.log(request.headers.authorization);
+  // console.log("APP_SECRET", APP_SECRET);
   const token = request.headers.authorization.split(" ")[1];
 
   const decoded = verify(token, APP_SECRET);

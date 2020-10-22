@@ -20,6 +20,7 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
   const { dev_id, payload_fields, metadata } = request.body as Partial<
     TTNHTTPPayload
   >;
+
   if (!dev_id || typeof dev_id !== "string") {
     throw createError(400, `dev_id not defined or not a string`);
   }
@@ -34,7 +35,7 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
       throw createError(400, `metadata time could not be parsed into date`);
     }
   }
-
+  let value = 0;
   const devices = await prisma.device.findMany({
     where: { ttnDeviceId: dev_id },
   });
@@ -59,18 +60,22 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
   if (!payload_fields) {
     throw createError(400, `payload_fields not defined`);
   }
-  if (!payload_fields.value || typeof payload_fields.value !== "number") {
-    throw createError(400, `value not defined or not a number`);
+  // if (!payload_fields.value || typeof payload_fields.value !== "number") {
+  //   throw createError(400, `value not defined or not a number`);
+  // }
+  if (payload_fields.value) {
+    if (!isNaN(payload_fields.value)) {
+      value = payload_fields.value;
+    }
   }
-
   const record = await prisma.record.create({
     data: {
-      value: payload_fields?.value,
+      value,
       recordedAt: metadata.time,
       Device: { connect: { id: devices[0].id } },
     },
   });
-  response.json(createPayload({ record }));
+  response.status(201).json(createPayload({ record }));
 };
 
 export const postRecordByTTNId: HandlerFunction = async (request, response) => {
