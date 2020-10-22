@@ -3,8 +3,7 @@ import { NextFunction, Response, Request } from "express";
 import { verify } from "jsonwebtoken";
 
 import createError from "http-errors";
-
-const APP_SECRET = process.env.APP_SECRET || "superdupersecret";
+import { APP_SECRET } from "./envs";
 const prisma = new PrismaClient();
 
 export type MiddlewareFunction = (
@@ -49,6 +48,20 @@ export const recordCheck: MiddlewareFunction = async (
   next();
 };
 
+export const projectCheck: MiddlewareFunction = async (
+  request,
+  response,
+  next,
+) => {
+  const id = parseInt(request.params.projectId);
+  const project = await prisma.project.findOne({ where: { id: id } });
+  if (!project) {
+    throw createError(404, `project with id ${id} does not exists`);
+  }
+  response.locals.project = project;
+  next();
+};
+
 export const authCheck: MiddlewareFunction = async (
   request,
   response,
@@ -57,12 +70,13 @@ export const authCheck: MiddlewareFunction = async (
   if (!request.headers.authorization) {
     throw createError(401, `No credentials provided`);
   }
+  // console.log(request.headers.authorization);
   const token = request.headers.authorization.split(" ")[1];
 
   const decoded = verify(token, APP_SECRET);
   if (!decoded) {
     throw createError(404, `token invalid`);
   }
-  response.locals.decoded = decoded;
+  response.locals.user = decoded;
   next();
 };

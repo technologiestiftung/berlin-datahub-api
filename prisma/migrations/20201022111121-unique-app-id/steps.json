@@ -1,0 +1,21 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteField",
+      "model": "Device",
+      "field": "ttnAppId"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Project",
+          "field": "ttnAppId"
+        },
+        "directive": "unique"
+      }
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateModel",
+      "model": "Project"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "id",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Project",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Project",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Project",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "description",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "title",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "city",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "ttnAppId",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "devices",
+      "type": "Device",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "User",
+      "type": "User",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Project",
+          "field": "User"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Project",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[userId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Project",
+          "field": "User"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Project",
+      "field": "userId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "projects",
+      "type": "Project",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Device",
+      "field": "Project",
+      "type": "Project",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Device",
+          "field": "Project"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Device",
+          "field": "Project"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[projectId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Device",
+          "field": "Project"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Device",
+      "field": "projectId",
+      "type": "Int",
+      "arity": "Optional"
+    }
+  ]
+}

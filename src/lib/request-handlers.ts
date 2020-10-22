@@ -1,7 +1,7 @@
 import { hash, compare } from "bcrypt";
 import { sign, SignOptions } from "jsonwebtoken";
 import createError from "http-errors";
-import { PrismaClient, Device, Record } from "@prisma/client";
+import { PrismaClient, Device, Record, Project } from "@prisma/client";
 import { Handler, Request, Response } from "express";
 import _ from "lodash";
 import { createPayload } from "./utils";
@@ -15,33 +15,53 @@ const tokenSignOpts: SignOptions = {
   algorithm: "HS256",
   // expiresIn: "7d",
 };
-// export const getApplications: HandlerFunction = async (_request, response) => {
-//   const applications = await prisma.application.findMany();
-//   response.json(createPayload({ applications }));
-// };
 
-// export const postApplication: HandlerFunction = async (request, response) => {
-//   console.log(request.body);
-//   const { name, applicationKey, description } = request.body;
-//   if (!name || typeof name !== "string") {
-//     throw createError(400, `application name is not defined or not a string`);
-//   }
-//   if (!applicationKey || typeof applicationKey !== "string") {
-//     throw createError(
-//       400,
-//       `application applicationkey is not defined or not a string`,
-//     );
-//   }
+export const getProjects: HandlerFunction = async (_request, response) => {
+  const projects = await prisma.project.findMany({});
+  response.json(createPayload({ projects }));
+};
 
-//   // if (!description && typeof description !== "string") {
-//   //   throw createError(400, `description is not a string`);
-//   // }
+export const postProject: HandlerFunction = async (request, response) => {
+  // console.log(request.body);
+  // console.log("user", response.locals.user);
+  const { title, ttnAppId, description, city } = request.body;
+  const { userId } = response.locals.user as { userId: number };
+  if (!title || typeof title !== "string") {
+    throw createError(400, `title is not defined or not a string`);
+  }
+  if (!description || typeof description !== "string") {
+    throw createError(400, `description is not defined or not a string`);
+  }
+  if (ttnAppId) {
+    if (typeof ttnAppId !== "string") {
+      throw createError(400, `ttnAppId is not a string`);
+    }
+  }
+  if (city) {
+    if (typeof city !== "string") {
+      throw createError(400, `city is not a string`);
+    }
+  }
+  const user = await prisma.user.findOne({ where: { id: userId } });
+  let project: Project;
+  if (user) {
+    project = await prisma.project.create({
+      data: {
+        title,
+        description,
+        User: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
+  } else {
+    throw createError(401, "How did you get here?");
+  }
 
-//   const application = await prisma.application.create({
-//     data: { name, applicationKey, description },
-//   });
-//   response.status(201).json(createPayload({ application }));
-// };
+  response.status(201).json(createPayload({ project }));
+};
 
 // export const getApplicationById: HandlerFunction = async (
 //   _request,
@@ -51,6 +71,16 @@ const tokenSignOpts: SignOptions = {
 //   response.json(createPayload({ application }));
 // };
 
+export const getDevicesFromProject: HandlerFunction = async (
+  request,
+  response,
+) => {
+  const project = response.locals.project as Project;
+  const devices = await prisma.project
+    .findOne({ where: { id: project.id } })
+    .devices();
+  response.json(createPayload({ devices }));
+};
 export const getDevices: HandlerFunction = async (_request, response) => {
   // const application = response.locals.application as Application;
   const devices = await prisma.device.findMany();
@@ -59,20 +89,27 @@ export const getDevices: HandlerFunction = async (_request, response) => {
 
 export const postDevice: Handler = async (request, response) => {
   // const application = response.locals.application as Application;
-  const { description, ttnDeviceId, ttnAppId } = request.body;
+  const { description, ttnDeviceId, projectId } = request.body;
 
   if (!ttnDeviceId || typeof ttnDeviceId !== "string") {
-    throw createError(400, `device ttnDeviceId is not defined or not a string`);
-  }
-  if (!ttnAppId || typeof ttnAppId !== "string") {
-    throw createError(400, `device ttnAppId is not defined or not a string`);
+    throw createError(400, `ttnDeviceId is not defined or not a string`);
   }
 
+  if (!projectId || typeof projectId !== "number") {
+    throw createError(400, `projectId is not defined or not a number`);
+  }
+
+  const project = await prisma.project.findOne({ where: { id: projectId } });
+  if (!project) {
+    throw createError(400, `project with id: ${projectId} does not exist`);
+  }
   const device = await prisma.device.create({
     data: {
       ttnDeviceId,
-      ttnAppId,
       description,
+      Project: {
+        connect: { id: projectId },
+      },
     },
   });
   response.status(201).json(createPayload({ device }));
@@ -95,25 +132,31 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
   request,
   response,
 ) => {
-  const {
-    app_id,
-    dev_id,
-    port,
-    counter,
-    payload_raw,
-    payload_fields,
-    metadata,
-  } = request.body as Partial<TTNHTTPPayload>;
+  const { dev_id, payload_fields, metadata } = request.body as Partial<
+    TTNHTTPPayload
+  >;
+  if (!dev_id || typeof dev_id !== "string") {
+    throw createError(400, `dev_id not defined or not a string`);
+  }
+  if (!metadata) {
+    throw createError(400, `metadata not defined`);
+  }
+  if (metadata) {
+    if (!metadata.time) {
+      throw createError(400, `metadata.time not defined`);
+    }
+    if (isNaN(Date.parse(metadata.time))) {
+      throw createError(400, `metadata time could not be parsed into date`);
+    }
+  }
 
   const devices = await prisma.device.findMany({
     where: { ttnDeviceId: dev_id },
   });
+
+  console.log(devices);
   if (devices.length === 0) {
-    throw createError(
-      400,
-      `This device does not exist
-      `,
-    );
+    throw createError(400, `This device does not exist`);
   }
 
   // update lat lon of the device
@@ -128,10 +171,13 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
       });
     }
   }
-
-  if (!payload_fields?.value || !metadata?.time) {
-    throw createError(400, `Time or value not provided`);
+  if (!payload_fields) {
+    throw createError(400, `payload_fields not defined`);
   }
+  if (!payload_fields.value || typeof payload_fields.value !== "number") {
+    throw createError(400, `value not defined or not a number`);
+  }
+
   const record = await prisma.record.create({
     data: {
       value: payload_fields?.value,
@@ -258,7 +304,7 @@ export const login: HandlerFunction = async (request, response) => {
 };
 
 export const profile: HandlerFunction = async (request, response) => {
-  const { userId } = response.locals.decoded;
+  const { userId } = response.locals.user;
   const user = await prisma.user.findOne({ where: { id: userId } });
   if (!user) {
     throw createError(401, "not authorized");
