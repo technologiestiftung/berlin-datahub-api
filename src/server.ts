@@ -17,13 +17,15 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 // make morgan skip the healthcheck https://github.com/expressjs/morgan#skip
 
-const logType = process.env.NODE_ENV === "development" ? "dev" : "combined";
+if (process.env.NODE_ENV !== "test") {
+  const logType = process.env.NODE_ENV === "development" ? "dev" : "combined";
 
-server.use(
-  morgan(logType, {
-    skip: (req) => req.url === "/api/healthcheck",
-  }),
-);
+  server.use(
+    morgan(logType, {
+      skip: (req) => req.url === "/api/healthcheck",
+    }),
+  );
+}
 
 server.get("/", generalLimiter, asyncWrapper(status));
 server.get("/healthcheck", generalLimiter, asyncWrapper(status));

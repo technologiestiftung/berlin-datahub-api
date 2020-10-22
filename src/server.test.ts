@@ -25,7 +25,9 @@ describe("supertest default routes", () => {
     expect(response.status).toBe(200);
     expect(response.body).toMatchInlineSnapshot(`
       Object {
-        "status": "active",
+        "data": Object {
+          "message": "Berlin DataHub API",
+        },
       }
     `);
   });
@@ -42,11 +44,12 @@ describe("supertest default routes", () => {
   });
   test("should return 404 and message is wrong route on /api", async () => {
     const response = await request(server).get("/api");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(200);
     expect(response.body).toMatchInlineSnapshot(`
       Object {
-        "message": "wrong route",
-        "status": 404,
+        "data": Object {
+          "message": "Berlin DataHub API",
+        },
       }
     `);
   });
