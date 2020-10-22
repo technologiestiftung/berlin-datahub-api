@@ -19,14 +19,13 @@ import {
   getRecordById,
   postRecordsFromTTNHTTPIntegration,
 } from "./request-handlers/records";
+import { status } from "./request-handlers/status";
 import { asyncWrapper, asyncMiddlewareWrapper } from "./utils";
 import { signup, login, profile } from "./request-handlers/users";
 
 export const router = Router();
 
-router.get("/healthcheck", (req, res) => {
-  res.json({ status: "active" });
-});
+router.get("/", generalLimiter, asyncWrapper(status));
 
 //  ██▓███   ██▀███   ▒█████   ▄▄▄██▀▀▀
 // ▓██░  ██▒▓██ ▒ ██▒▒██▒  ██▒   ▒██

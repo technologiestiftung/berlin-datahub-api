@@ -1,0 +1,22 @@
+
+### Meta API Routes
+
+
+### Variables
+@hostname = localhost
+@port = 4000
+@mountPoint = api
+@host = {{hostname}}:{{port}}
+@baseUrl = http://{{host}}/{{mountPoint}}
+###
+GET http://{{host}}
+
+###
+GET {{baseUrl}}
+
+###
+
+# Used by render.com for checking if the application
+# is still running
+
+GET {{baseUrl}}/healthcheck
