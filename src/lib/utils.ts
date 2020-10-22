@@ -50,6 +50,7 @@ export const errorHandler: (
   if (process.env.NODE_ENV === "development") {
     console.error("In Error Handler", error);
   }
+  // console.error(error);
   // Sends response
 
   response.status(status).json({
