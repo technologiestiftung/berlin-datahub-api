@@ -4,7 +4,9 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import { router } from "./lib/api-routes";
-import { createPayload, errorHandler } from "./lib/utils";
+import { status } from "./lib/request-handlers/status";
+import { asyncWrapper, errorHandler } from "./lib/utils";
+import { generalLimiter } from "./lib/rate-limiters";
 
 const server = express();
 if (process.env.NODE_ENV === "production") {
@@ -15,24 +17,19 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 // make morgan skip the healthcheck https://github.com/expressjs/morgan#skip
 
-if (server.get("env") !== "test") {
+if (process.env.NODE_ENV !== "test") {
   const logType = process.env.NODE_ENV === "development" ? "dev" : "combined";
+
   server.use(
     morgan(logType, {
-      skip: function (req, _res) {
-        if (req.url === "/api/healthcheck") {
-          return true;
-        } else {
-          return false;
-        }
-      },
+      skip: (req) => req.url === "/api/healthcheck",
     }),
   );
 }
 
-server.get("/", (_req, res) => {
-  res.json(createPayload({ message: "Berlin DataHub API" }));
-});
+server.get("/", generalLimiter, asyncWrapper(status));
+server.get("/healthcheck", generalLimiter, asyncWrapper(status));
+server.get("/api/healthcheck", generalLimiter, asyncWrapper(status));
 server.use("/api", router);
 
 // server.get("/api/devices", generalLimiter, asyncWrapper(getDevices));

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
+import { logger } from "./logger";
 
 // taken from https://zellwk.com/blog/async-await-express/
 export function asyncWrapper(
@@ -48,9 +49,9 @@ export const errorHandler: (
     status = error.status;
   }
   if (process.env.NODE_ENV === "development") {
-    console.error("In Error Handler", error);
+    logger.log("error", error);
   } else {
-    console.error(error.message);
+    logger.error("error", error.message);
   }
   // Sends response
 
