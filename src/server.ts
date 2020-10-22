@@ -19,7 +19,6 @@ server.use(express.urlencoded({ extended: true }));
 
 if (process.env.NODE_ENV !== "test") {
   const logType = process.env.NODE_ENV === "development" ? "dev" : "combined";
-
   server.use(
     morgan(logType, {
       skip: (req) => req.url === "/api/healthcheck",
