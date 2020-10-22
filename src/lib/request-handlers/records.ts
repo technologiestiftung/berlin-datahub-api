@@ -40,7 +40,6 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
     where: { ttnDeviceId: dev_id },
   });
 
-  console.log(devices);
   if (devices.length === 0) {
     throw createError(400, `This device does not exist`);
   }
