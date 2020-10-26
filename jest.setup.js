@@ -5,7 +5,7 @@ const logger = {
   log: jest.fn(),
   add: jest.fn(),
 };
-
+jest.mock("logdna-winston");
 jest.mock("winston", () => ({
   format: {
     colorize: jest.fn(),
