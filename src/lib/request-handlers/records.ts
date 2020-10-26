@@ -4,6 +4,7 @@ import { createPayload } from "../utils";
 import { TTNHTTPPayload } from "../../common/interfaces";
 import { prisma } from "../prisma";
 import { HandlerFunction } from "../../common/types";
+import { logger } from "../logger";
 
 export const getRecords: HandlerFunction = async (_request, response) => {
   const device = response.locals.device as Device;
@@ -20,7 +21,7 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
   const { dev_id, payload_fields, metadata } = request.body as Partial<
     TTNHTTPPayload
   >;
-
+  logger.log("info", "TTN device sending data", request.body);
   if (!dev_id || typeof dev_id !== "string") {
     throw createError(400, `dev_id not defined or not a string`);
   }
