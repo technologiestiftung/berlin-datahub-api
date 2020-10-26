@@ -16,6 +16,10 @@ services:
           property: connectionString
       - key: APP_SECRET
         generateValue: true
+      - key: LOGDNA_KEY
+        sync: false
+      - key: LOGDNA_ACCOUNT
+        sync: false
 databases:
   - name: datahub
     databaseName: datahub

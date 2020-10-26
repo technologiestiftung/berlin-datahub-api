@@ -20,7 +20,7 @@ import {
   postRecordsFromTTNHTTPIntegration,
 } from "./request-handlers/records";
 import { status } from "./request-handlers/status";
-import { asyncWrapper, asyncMiddlewareWrapper } from "./utils";
+import { asyncWrapper, asyncMiddlewareWrapper, createPayload } from "./utils";
 import { signup, login, profile } from "./request-handlers/users";
 
 export const router = Router();
@@ -162,18 +162,18 @@ router.post(
 router.post(
   "/signup",
   signupLimiter,
-  // (req, res) => {
-  //   res.json(
-  //     createPayload({
-  //       message: "Signup not possible at the moment. Come back another day",
-  //     }),
-  //   );
-  // },
+  (req, res) => {
+    res.json(
+      createPayload({
+        message: "Signup not possible at the moment. Come back another day",
+      }),
+    );
+  },
   /**
    * currently we don't allow signups
    * maybe in the future
    */
-  asyncWrapper(signup),
+  // asyncWrapper(signup),
 );
 
 router.post("/login", loginLimiter, asyncWrapper(login));
