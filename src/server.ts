@@ -34,7 +34,6 @@ server.use("/api/v1", router);
 server.use(
   "/api",
   (req, res, next) => {
-    console.log("middleware");
     res.append("Deprecation", "true");
     next();
   },
