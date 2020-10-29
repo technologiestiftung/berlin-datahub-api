@@ -29,7 +29,16 @@ if (process.env.NODE_ENV !== "test") {
 server.get("/", generalLimiter, asyncWrapper(status));
 server.get("/healthcheck", generalLimiter, asyncWrapper(status));
 server.get("/api/healthcheck", generalLimiter, asyncWrapper(status));
-server.use("/api", router);
+server.use("/api/v1", router);
+
+server.use(
+  "/api",
+  (req, res, next) => {
+    res.append("Deprecation", "true");
+    next();
+  },
+  router,
+);
 
 // ▓█████  ██▀███   ██▀███   ▒█████   ██▀███
 // ▓█   ▀ ▓██ ▒ ██▒▓██ ▒ ██▒▒██▒  ██▒▓██ ▒ ██▒
