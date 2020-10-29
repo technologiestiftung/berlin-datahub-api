@@ -1,0 +1,228 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>berlin-datahub-api - v0.0.1</title>
+	<meta name="description" content="Documentation for berlin-datahub-api - v0.0.1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">berlin-datahub-api - v0.0.1</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>berlin-datahub-api - v0.0.1</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#berlin-iot-hub-api" id="berlin-iot-hub-api" style="color: inherit; text-decoration: none;">
+					<h1>Berlin IoT Hub API</h1>
+				</a>
+				<!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->
+				<!-- code_chunk_output -->
+				<ul>
+					<li><a href="#berlin-iot-hub-api">Berlin IoT Hub API</a><ul>
+							<li><a href="#berlin-iot-hub-technology-stack">Berlin IoT Hub Technology Stack</a></li>
+							<li><a href="#development">Development</a><ul>
+									<li><a href="#prerequisites">Prerequisites</a></li>
+									<li><a href="#setup">Setup</a></li>
+									<li><a href="#work-on-it">Work on it</a></li>
+								</ul>
+							</li>
+							<li><a href="#test">Test</a></li>
+							<li><a href="#deploy">Deploy</a></li>
+							<li><a href="#api-interaction--documentation">API Interaction + Documentation</a></li>
+							<li><a href="#docs">Docs</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- /code_chunk_output -->
+				<a href="#berlin-iot-hub-technology-stack" id="berlin-iot-hub-technology-stack" style="color: inherit; text-decoration: none;">
+					<h2>Berlin IoT Hub Technology Stack</h2>
+				</a>
+				<p>The Berlin IoT Hub consists of two components, namely: an RESTful API and a frontend. All of these components are administrated within their very own Repository stored in</p>
+				<ul>
+					<li><a href="https://github.com/technologiestiftung/berlin-datahub-api">github.com/technologiestiftung/berlin-datahub-api</a></li>
+					<li><a href="https://github.com/technologiestiftung/berlin-iot-hub-frontend">github.com/technologiestiftung/berlin-iot-hub-frontend</a></li>
+				</ul>
+				<p><img src="images/berlin-IoT-hub-diagram.png" alt="Technology Stack"></p>
+				<a href="#development" id="development" style="color: inherit; text-decoration: none;">
+					<h2>Development</h2>
+				</a>
+				<p>The API is written in Typescript and uses Express.js + and Prisma. </p>
+				<a href="#prerequisites" id="prerequisites" style="color: inherit; text-decoration: none;">
+					<h3>Prerequisites</h3>
+				</a>
+				<ul>
+					<li>Node.js &gt;= 12</li>
+					<li>Docker &gt;= 19</li>
+				</ul>
+				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
+					<h3>Setup</h3>
+				</a>
+				<pre><code class="language-bash">
+docker-compose up
+npm ci</code></pre>
+				<a href="#work-on-it" id="work-on-it" style="color: inherit; text-decoration: none;">
+					<h3>Work on it</h3>
+				</a>
+				<pre><code class="language-bash"><span class="hljs-comment"># Assumes you habe a posstgres DB running</span>
+npm run dev</code></pre>
+				<a href="#test" id="test" style="color: inherit; text-decoration: none;">
+					<h2>Test</h2>
+				</a>
+				<p>Uses Jest. Prisma creates for each test run a sqlite DB. Currently this is fine. We might need to switch to a Postgres setup later on.</p>
+				<pre><code class="language-bash">npm t</code></pre>
+				<a href="#deploy" id="deploy" style="color: inherit; text-decoration: none;">
+					<h2>Deploy</h2>
+				</a>
+				<p>The API is deployed to <a href="https://render.com">render.com</a>. You can find all definition in <a href="render.yaml">render.yaml</a>. Deploy via Infrastructure as Code</p>
+				<a href="#api-interaction--documentation" id="api-interaction--documentation" style="color: inherit; text-decoration: none;">
+					<h2>API Interaction + Documentation</h2>
+				</a>
+				<p>This api provides some endpoints for posting data over HTTP. You need an user account to do that. You can find many examples in the file <a href="http-requests/api.http">http-requests/api.http</a>. This file can be used with the <a href="https://github.com/Huachao/vscode-restclient">VSCode Rest Client Extension</a>.</p>
+				<a href="#docs" id="docs" style="color: inherit; text-decoration: none;">
+					<h2>Docs</h2>
+				</a>
+				<p>Docs are generated using <a href="http://typedoc.org/">typedoc</a> and deployed to github pages.  </p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_common_interfaces_.html">&quot;common/interfaces&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_common_types_.html">&quot;common/types&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_api_routes_.html">&quot;lib/api-<wbr>routes&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_envs_.html">&quot;lib/envs&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_logger_.html">&quot;lib/logger&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_middlewares_.html">&quot;lib/middlewares&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_prisma_.html">&quot;lib/prisma&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_rate_limiters_.html">&quot;lib/rate-<wbr>limiters&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_request_handlers_devices_.html">&quot;lib/request-<wbr>handlers/devices&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_request_handlers_projects_.html">&quot;lib/request-<wbr>handlers/projects&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_request_handlers_records_.html">&quot;lib/request-<wbr>handlers/records&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_request_handlers_status_.html">&quot;lib/request-<wbr>handlers/status&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_request_handlers_users_.html">&quot;lib/request-<wbr>handlers/users&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_lib_utils_.html">&quot;lib/utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_server_.html">&quot;server&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_test_helpers_.html">&quot;test/helpers&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

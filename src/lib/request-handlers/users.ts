@@ -5,11 +5,17 @@ import { APP_SECRET } from "../envs";
 import { prisma } from "../prisma";
 import { createPayload } from "../utils";
 import createError from "http-errors";
-const tokenSignOpts: SignOptions = {
+export const tokenSignOpts: SignOptions = {
   algorithm: "HS256",
   // expiresIn: "7d",
 };
 
+/**
+ * This is for signing up users. It actually is disabled in production.
+ * Users can only created by developers for now
+ * re DATAHUB-82
+ * TODO: [DATAHUB-89] Find a better schema for backend user authentication. This is actually a frontend method that we are using. The JWTs should not live forever
+ */
 export const signup: HandlerFunction = async (request, response) => {
   const { username, password } = request.body;
 
@@ -34,8 +40,6 @@ export const signup: HandlerFunction = async (request, response) => {
 
 /**
  * handles user login and returns token if user and password match
- *
- *
  */
 export const login: HandlerFunction = async (request, response) => {
   const { username, password } = request.body;
@@ -66,6 +70,10 @@ export const login: HandlerFunction = async (request, response) => {
     );
 };
 
+/**
+ * Returns some basic information about a user
+ *
+ */
 export const profile: HandlerFunction = async (request, response) => {
   const { userId } = response.locals.user;
   const user = await prisma.user.findOne({ where: { id: userId } });

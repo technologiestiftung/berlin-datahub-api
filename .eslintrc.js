@@ -2,6 +2,7 @@
 const localConfig = {
   rules: {
     "jest/no-hooks": "off",
+    "no-console": ["error", { allow: ["warn", "error"] }],
   },
 };
 const utlities = require("@inpyjamas/scripts/dist/utlities");

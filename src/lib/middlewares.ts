@@ -1,23 +1,15 @@
-// import { PrismaClient } from "@prisma/client";
-import { NextFunction, Response, Request } from "express";
 import { verify } from "jsonwebtoken";
-
 import createError from "http-errors";
 import { APP_SECRET } from "./envs";
 import { prisma } from "./prisma";
+import { AsyncMiddlewareFunction } from "../common/types";
 // const prisma = new PrismaClient();
-
-export type MiddlewareFunction = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => Promise<void>;
 
 /**
  * Middleware that checks for existing devices
  * Needs the asyncMiddlewareWrapper to work
  */
-export const deviceCheck: MiddlewareFunction = async (
+export const deviceCheck: AsyncMiddlewareFunction = async (
   request,
   response,
   next,
@@ -35,7 +27,7 @@ export const deviceCheck: MiddlewareFunction = async (
  * Middleware that checks for existing records
  * Needs the asyncMiddlewareWrapper to work
  */
-export const recordCheck: MiddlewareFunction = async (
+export const recordCheck: AsyncMiddlewareFunction = async (
   request,
   response,
   next,
@@ -49,7 +41,7 @@ export const recordCheck: MiddlewareFunction = async (
   next();
 };
 
-export const projectCheck: MiddlewareFunction = async (
+export const projectCheck: AsyncMiddlewareFunction = async (
   request,
   response,
   next,
@@ -63,7 +55,7 @@ export const projectCheck: MiddlewareFunction = async (
   next();
 };
 
-export const authCheck: MiddlewareFunction = async (
+export const authCheck: AsyncMiddlewareFunction = async (
   request,
   response,
   next,
@@ -71,11 +63,11 @@ export const authCheck: MiddlewareFunction = async (
   if (!request.headers.authorization) {
     throw createError(401, `No credentials provided`);
   }
-  // console.log(request.headers.authorization);
-  // console.log("APP_SECRET", APP_SECRET);
+
   const token = request.headers.authorization.split(" ")[1];
 
   const decoded = verify(token, APP_SECRET);
+  // TODO: This might be unnecessary
   if (!decoded) {
     throw createError(404, `token invalid`);
   }

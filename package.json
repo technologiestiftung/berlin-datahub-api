@@ -9,6 +9,7 @@
     "dev": "ts-node-dev -r dotenv/config --respawn --transpile-only src/index.ts dotenv_config_path=./prisma/.env",
     "prebuild": "prisma generate",
     "build": "tsc -p .",
+    "typedoc": "typedoc",
     "prisma:migration:save": "prisma migrate save --experimental",
     "prisma:migration:up": "prisma migrate up --experimental"
   },
@@ -29,7 +30,8 @@
     "dotenv": "8.2.0",
     "jest-environment-node": "26.5.2",
     "nanoid": "3.1.12",
-    "supertest": "5.0.0"
+    "supertest": "5.0.0",
+    "typedoc": "0.19.2"
   },
   "dependencies": {
     "@prisma/client": "2.9.0",

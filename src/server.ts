@@ -26,9 +26,11 @@ if (process.env.NODE_ENV !== "test") {
   );
 }
 
-server.get("/", generalLimiter, asyncWrapper(status));
-server.get("/healthcheck", generalLimiter, asyncWrapper(status));
-server.get("/api/healthcheck", generalLimiter, asyncWrapper(status));
+server.get(
+  ["/", "healthcheck", "/api/healthcheck", "/api/v1/healthcheck"],
+  generalLimiter,
+  asyncWrapper(status),
+);
 server.use("/api/v1", router);
 
 server.use(

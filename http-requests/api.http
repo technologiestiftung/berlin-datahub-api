@@ -1,0 +1,155 @@
+### Variables
+@hostname = localhost
+@port = 4000
+@mountPoint = api/v1
+@host = {{hostname}}:{{port}}
+@baseUrl = http://{{host}}/{{mountPoint}}
+
+# shoud be defined in .env file next to this one
+@token = Bearer {{$dotenv TOKEN}}
+
+@username = {{$dotenv USERNAME}}
+
+@password = {{$dotenv PASSWORD}}
+###
+GET http://{{host}}
+
+### /
+GET {{baseUrl}}
+
+### Healthcheck
+# Used by render.com for checking if the application
+# is still running
+GET {{baseUrl}}/healthcheck
+
+### Devices
+GET {{baseUrl}}/devices
+
+### Devices by id
+GET {{baseUrl}}/devices/1
+
+### Records from Devices by id
+GET {{baseUrl}}/devices/1/records
+
+### Records from Devices by id
+GET {{baseUrl}}/devices/1/records/1
+
+### Projects
+GET {{baseUrl}}/projects
+
+### Projects by id
+GET {{baseUrl}}/projects/1
+
+#  ██▓███   ▒█████    ██████ ▄▄▄█████▓
+# ▓██░  ██▒▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒
+# ▓██░ ██▓▒▒██░  ██▒░ ▓██▄   ▒ ▓██░ ▒░
+# ▒██▄█▓▒ ▒▒██   ██░  ▒   ██▒░ ▓██▓ ░
+# ▒██▒ ░  ░░ ████▓▒░▒██████▒▒  ▒██▒ ░
+# ▒▓▒░ ░  ░░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░  ▒ ░░
+# ░▒ ░       ░ ▒ ▒░ ░ ░▒  ░ ░    ░
+# ░░       ░ ░ ░ ▒  ░  ░  ░    ░
+#              ░ ░        ░
+
+### device
+# Needs a .env file with a token and
+POST {{baseUrl}}/devices
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "projectId": 3,
+  "ttnDeviceId": "your-device-id",
+  "description": "My fancy device",
+  "latitude": 13,
+  "longitude": 52
+}
+
+### record
+# Needs a .env file with a token and
+# Needs DateTime to bo https://en.wikipedia.org/wiki/ISO_8601
+POST {{baseUrl}}/devices/1/records
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "value": 3,
+  "recordedAt": "{{$datetime 'YYYY-MM-DDTHH:MM:ss'}}.000Z"
+}
+
+
+### ttn HTTP integration
+# Needs a .env file with a token and
+# Needs DateTime to bo https://en.wikipedia.org/wiki/ISO_8601
+# the dev_id must exists in one of your devices
+POST {{baseUrl}}/ttn
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "app_id": "my-app-id",
+  "dev_id": "ping-03",
+  "metadata":{
+    "time":  "{{$datetime 'YYYY-MM-DDTHH:MM:ss'}}.000Z",
+    "latitude": 13,
+    "longitude": 52,
+    "altitude": 2
+  },
+  "payload_fields":{
+  "value": 3
+  }
+}
+
+
+
+### Projects
+
+POST {{baseUrl}}/projects
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "title": "Super cool new project",
+  "description": "My fancy project",
+  "ttnAppId": "something-from-the-ttn-network",
+  "city": "Berlin"
+}
+
+
+###
+#  █    ██   ██████ ▓█████  ██▀███
+#  ██  ▓██▒▒██    ▒ ▓█   ▀ ▓██ ▒ ██▒
+# ▓██  ▒██░░ ▓██▄   ▒███   ▓██ ░▄█ ▒
+# ▓▓█  ░██░  ▒   ██▒▒▓█  ▄ ▒██▀▀█▄
+# ▒▒█████▓ ▒██████▒▒░▒████▒░██▓ ▒██▒
+# ░▒▓▒ ▒ ▒ ▒ ▒▓▒ ▒ ░░░ ▒░ ░░ ▒▓ ░▒▓░
+# ░░▒░ ░ ░ ░ ░▒  ░ ░ ░ ░  ░  ░▒ ░ ▒░
+#  ░░░ ░ ░ ░  ░  ░     ░     ░░   ░
+#    ░           ░     ░  ░   ░
+
+
+### Login
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### Signup (currently disabled)
+
+POST {{baseUrl}}/signup
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### Profile
+
+GET {{baseUrl}}/profile
+Content-Type: application/json
+Authorization: {{token}}
+

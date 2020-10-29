@@ -67,6 +67,79 @@ describe("device handlers", () => {
     );
   });
 
+  test("postDevice should throw: projectId is not defined or not a number", async () => {
+    const res = setupResponse({});
+    const req = setupRequest({ body: {} });
+    await expect(postDevice(req, res)).rejects.toThrow(
+      "projectId is not defined or not a number",
+    );
+  });
+
+  test("postDevice should throw: ttnDeviceId is not defined or not a number", async () => {
+    const res = setupResponse({});
+    const req = setupRequest({ body: { projectId: 1 } });
+    await expect(postDevice(req, res)).rejects.toThrow(
+      "ttnDeviceId is not defined or not a string",
+    );
+  });
+
+  test("postDevice should throw: description is defined but not a string", async () => {
+    const res = setupResponse({});
+    const req = setupRequest({
+      body: { ttnDeviceId: "foo", projectId: 1, description: 1 },
+    });
+    await expect(postDevice(req, res)).rejects.toThrow(
+      "description is defined but not a string",
+    );
+  });
+
+  test("postDevice should throw: latitude is defined but not a number", async () => {
+    const res = setupResponse({});
+    const req = setupRequest({
+      body: {
+        ttnDeviceId: "foo",
+        projectId: 1,
+        description: "foo",
+        latitude: true,
+      },
+    });
+    await expect(postDevice(req, res)).rejects.toThrow(
+      "latitude is defined but not a number",
+    );
+  });
+
+  test("postDevice should throw: longitude is defined but not a number", async () => {
+    const res = setupResponse({});
+    const req = setupRequest({
+      body: {
+        ttnDeviceId: "foo",
+        projectId: 1,
+        description: "foo",
+        latitude: 1,
+        longitude: "1",
+      },
+    });
+    await expect(postDevice(req, res)).rejects.toThrow(
+      "longitude is defined but not a number",
+    );
+  });
+
+  test("postDevice should throw: project with id: ${projectId} does not exist", async () => {
+    const res = setupResponse({});
+    const req = setupRequest({
+      body: {
+        ttnDeviceId: "foo",
+        projectId: 1,
+        description: "foo",
+        latitude: 1,
+        longitude: 1,
+      },
+    });
+    await expect(postDevice(req, res)).rejects.toThrow(
+      `project with id: ${req.body.projectId} does not exist`,
+    );
+  });
+
   test("should call res.json with res locals device", async () => {
     const res = setupResponse({ locals: { device: { id: 1 } } });
     const req = setupRequest();
