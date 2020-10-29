@@ -5,12 +5,18 @@ import { HandlerFunction } from "../../common/types";
 import { prisma } from "../prisma";
 import { createPayload } from "../utils";
 
+/**
+ * Use prisma to GET all devices
+ */
 export const getDevices: HandlerFunction = async (_request, response) => {
-  // const application = response.locals.application as Application;
   const devices = await prisma.device.findMany();
   response.json(createPayload({ devices }));
 };
 
+/**
+ * Use prisma to POST a new device
+ *
+ */
 export const postDevice: HandlerFunction = async (request, response) => {
   const {
     description,
@@ -59,11 +65,21 @@ export const postDevice: HandlerFunction = async (request, response) => {
   response.status(201).json(createPayload({ device }));
 };
 
+/**
+ * specalized function to get device by its id. This function depends on lib/middlewares/deviceCheck to have been called and added the device to response.locals
+ * TODO: [DATAHUB-83] Test if response.locals.device really exists if not throw 500 internal error
+ *
+ */
 export const getDeviceById: HandlerFunction = async (_request, response) => {
   const device = response.locals.device as Device;
   response.json(createPayload({ device }));
 };
 
+/**
+ * Gets all devices that are part of a project depends on
+ * lib/middlewares/projectCheck
+ *
+ */
 export const getDevicesFromProject: HandlerFunction = async (
   request,
   response,

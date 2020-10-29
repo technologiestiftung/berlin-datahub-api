@@ -1,13 +1,21 @@
 import { createLogger, format, transports } from "winston";
 import logdnaWinston from "logdna-winston";
+import { LOGDNA_KEY, NODE_ENV } from "./envs";
+
+/**
+ * A default logger. Since we are on render we use the LogDNA add-on
+ * https://logdna.com/
+ *
+ * WE keep the old logger could around for now to be able to switch back.
+ */
 export const logger = createLogger({});
 const options = {
-  key: process.env.LOGDNA_KEY,
+  key: LOGDNA_KEY,
   hostname: "berlin-datahub-api.onrender.com",
   // ip: ipAddress,
   // mac: macAddress,
-  app: `berlin-datahub-${process.env.NODE_ENV}`,
-  env: process.env.NODE_ENV,
+  app: `berlin-datahub-${NODE_ENV}`,
+  env: NODE_ENV,
   // level: level, // Default to debug, maximum level of log, doc: https://github.com/winstonjs/winston#logging-levels
   indexMeta: true, // Defaults to false, when true ensures meta object will be searchable
 };
@@ -42,8 +50,7 @@ logger.add(new logdnaWinston(options));
 // If we're not in production then **ALSO** log to the `console`
 // with the colorized simple format.
 //
-
-if (process.env.NODE_ENV !== "production") {
+if (NODE_ENV !== "production") {
   logger.add(
     new transports.Console({
       format: format.combine(format.colorize(), format.simple()),

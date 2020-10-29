@@ -4,16 +4,28 @@ import { prisma } from "../prisma";
 import { createPayload } from "../utils";
 import createError from "http-errors";
 
+/**
+ * GET projects by id
+ *
+ */
 export const getProjectsById: HandlerFunction = async (_request, response) => {
   const project = response.locals.project as Project;
   response.json(createPayload({ project }));
 };
 
+/**
+ * GET projects
+ *
+ */
 export const getProjects: HandlerFunction = async (_request, response) => {
   const projects = await prisma.project.findMany({});
   response.json(createPayload({ projects }));
 };
 
+/**
+ * POST project
+ *
+ */
 export const postProject: HandlerFunction = async (request, response) => {
   // console.log(request.body);
   // console.log("user", response.locals.user);
@@ -42,6 +54,8 @@ export const postProject: HandlerFunction = async (request, response) => {
       data: {
         title,
         description,
+        city,
+        ttnAppId,
         User: {
           connect: {
             id: user.id,

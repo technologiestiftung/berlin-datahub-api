@@ -1,8 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
+import { AsyncMiddlewareFunction, MiddlewareFunction } from "../common/types";
 import { logger } from "./logger";
 
-// taken from https://zellwk.com/blog/async-await-express/
+/**
+ * This function can be used to wrap request handlers into an async function
+ * so we can make async/await calls to prisma.
+ * It is taken from https://zellwk.com/blog/async-await-express/
+ * FIXME: [DATAHUB-80] Once async handlers land in express we should fix this.
+ * There are also some packages that seem more robust then my snippet here.
+ * - https://www.npmjs.com/package/express-async-handler
+ */
 export function asyncWrapper(
   callback: (req: Request, res: Response, next: NextFunction) => Promise<void>,
 ): (req: Request, res: Response, next: NextFunction) => void {
@@ -12,17 +20,19 @@ export function asyncWrapper(
 }
 
 /**
- * Taken from https://github.com/tranvansang/middleware-async
+ * This function wraps middlewares to enable async calls in there.
+ * It is taken from https://github.com/tranvansang/middleware-async
+ *
+ * FIXME: [DATAHUB-79] Once async middlewares land in express we van remove this.
+ * If we run into errors it might be necessary to use the original repo and to contribute.
+ * FIXME: [DATAHUB-81] Create robust Typescript function signature
  *
  */
-
-export const asyncMiddlewareWrapper = (
-  middleware: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<any> | any,
-) => (req: Request, res: Response, next: NextFunction) => {
+export const asyncMiddlewareWrapper = (middleware: AsyncMiddlewareFunction) => (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   (async () => {
     let called = false;
     const cb = <T>(...args: ReadonlyArray<T>) => {
@@ -38,6 +48,9 @@ export const asyncMiddlewareWrapper = (
   })();
 };
 
+/**
+ * General error handler for all thrown errors in the application
+ */
 export const errorHandler: (
   error: Error | createError.HttpError,
   _request: Request,

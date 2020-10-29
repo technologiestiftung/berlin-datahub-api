@@ -6,6 +6,9 @@ import { prisma } from "../prisma";
 import { HandlerFunction } from "../../common/types";
 import { logger } from "../logger";
 
+/**
+ * GET all records from a device
+ */
 export const getRecords: HandlerFunction = async (_request, response) => {
   const device = response.locals.device as Device;
   const records = await prisma.record.findMany({
@@ -14,6 +17,23 @@ export const getRecords: HandlerFunction = async (_request, response) => {
   response.status(201).json(createPayload({ records }));
 };
 
+/**
+ * Special handler that allows posting data directly from the TTN network into the DB.
+ * We use the HTTP Integration from thethingsnetwork.org
+ * https://www.thethingsnetwork.org/docs/applications/http/
+ *
+ * Prerequisites:
+ *
+ * - You need to have an user account on thethingsnetwork.org
+ * - You need to have a user for this API
+ * - You need to have an API Token from this API
+ * - You need to setup a payload format decoder that adds
+ *  the payload_fields.value property
+ *
+ * This will allow to POST data to this route.
+ *
+ * You should find more information on this in the README of the repo on GitHub
+ */
 export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
   request,
   response,
@@ -78,38 +98,43 @@ export const postRecordsFromTTNHTTPIntegration: HandlerFunction = async (
   response.status(201).json(createPayload({ record }));
 };
 
-export const postRecordByTTNId: HandlerFunction = async (request, response) => {
-  const { ttnDeviceId, value, recordedAt } = request.body;
-  if (!ttnDeviceId && typeof ttnDeviceId !== "string") {
-    throw createError(400, `ttn device id not defined or not a string`);
-  }
-  if (!value && typeof value !== "string") {
-    throw createError(400, `record value is not defined or not a string`);
-  }
-  if (!recordedAt && typeof recordedAt !== "string") {
-    throw createError(
-      400,
-      `record value is not defined or not a string should be parsable as ISOString e.g. const str = new Date("2020-10-10").toISOString()
-      `,
-    );
-  }
+// export const postRecordByTTNId: HandlerFunction = async (request, response) => {
+//   const { ttnDeviceId, value, recordedAt } = request.body;
+//   if (!ttnDeviceId && typeof ttnDeviceId !== "string") {
+//     throw createError(400, `ttn device id not defined or not a string`);
+//   }
+//   if (!value && typeof value !== "string") {
+//     throw createError(400, `record value is not defined or not a string`);
+//   }
+//   if (!recordedAt && typeof recordedAt !== "string") {
+//     throw createError(
+//       400,
+//       `record value is not defined or not a string should be parsable as ISOString e.g. const str = new Date("2020-10-10").toISOString()
+//       `,
+//     );
+//   }
 
-  const devices = await prisma.device.findMany({
-    where: { ttnDeviceId: ttnDeviceId },
-  });
-  if (devices.length === 0) {
-    throw createError(
-      400,
-      `This device does not exist
-      `,
-    );
-  }
+//   const devices = await prisma.device.findMany({
+//     where: { ttnDeviceId: ttnDeviceId },
+//   });
+//   if (devices.length === 0) {
+//     throw createError(
+//       400,
+//       `This device does not exist
+//       `,
+//     );
+//   }
 
-  const record = await prisma.record.create({
-    data: { value, recordedAt, Device: { connect: { id: devices[0].id } } },
-  });
-  response.json(createPayload({ record }));
-};
+//   const record = await prisma.record.create({
+//     data: { value, recordedAt, Device: { connect: { id: devices[0].id } } },
+//   });
+//   response.json(createPayload({ record }));
+// };
+
+/**
+ * allows to POST a record. Depends on lib/middlewares/deviceCheck
+ *
+ */
 export const postRecord: HandlerFunction = async (request, response) => {
   const { value, recordedAt } = request.body;
   if (!value && typeof value !== "string") {
@@ -122,8 +147,8 @@ export const postRecord: HandlerFunction = async (request, response) => {
       `,
     );
   }
-  // TODO: Needs some error handling for the
-  // DateTime parsing
+  // TODO: [DATAHUB-88] Needs some error handling for the
+  // DateTime parsing https://github.com/prisma/prisma-client-js/issues/656
   const device = response.locals.device as Device;
 
   const record = await prisma.record.create({
@@ -132,6 +157,10 @@ export const postRecord: HandlerFunction = async (request, response) => {
   response.status(201).json(createPayload({ record }));
 };
 
+/**
+ * GET a record by its ID
+ *
+ */
 export const getRecordById: HandlerFunction = async (_request, response) => {
   const record = response.locals.record as Record;
   response.json(createPayload({ record }));
