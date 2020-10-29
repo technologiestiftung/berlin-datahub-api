@@ -12,17 +12,35 @@ export const getDevices: HandlerFunction = async (_request, response) => {
 };
 
 export const postDevice: HandlerFunction = async (request, response) => {
-  // const application = response.locals.application as Application;
-  const { description, ttnDeviceId, projectId } = request.body;
-
-  if (!ttnDeviceId || typeof ttnDeviceId !== "string") {
-    throw createError(400, `ttnDeviceId is not defined or not a string`);
-  }
+  const {
+    description,
+    ttnDeviceId,
+    projectId,
+    latitude,
+    longitude,
+  } = request.body;
 
   if (!projectId || typeof projectId !== "number") {
     throw createError(400, `projectId is not defined or not a number`);
   }
-
+  if (!ttnDeviceId && typeof ttnDeviceId !== "string") {
+    throw createError(400, `ttnDeviceId is not defined or not a string`);
+  }
+  if (description) {
+    if (typeof description !== "string") {
+      throw createError(400, `description is defined but not a number`);
+    }
+  }
+  if (latitude) {
+    if (typeof latitude !== "number") {
+      throw createError(400, `latitude is defined but not a number`);
+    }
+  }
+  if (longitude) {
+    if (typeof longitude !== "number") {
+      throw createError(400, `longitude is defined but not a number`);
+    }
+  }
   const project = await prisma.project.findOne({ where: { id: projectId } });
   if (!project) {
     throw createError(400, `project with id: ${projectId} does not exist`);
@@ -31,6 +49,8 @@ export const postDevice: HandlerFunction = async (request, response) => {
     data: {
       ttnDeviceId,
       description,
+      latitude,
+      longitude,
       Project: {
         connect: { id: projectId },
       },
