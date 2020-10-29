@@ -32,19 +32,19 @@ export const postProject: HandlerFunction = async (request, response) => {
   const { title, ttnAppId, description, city } = request.body;
   const { userId } = response.locals.user as { userId: number };
   if (!title || typeof title !== "string") {
-    throw createError(400, `title is not defined or not a string`);
+    throw createError(400, "title is not defined or not a string");
   }
   if (!description || typeof description !== "string") {
-    throw createError(400, `description is not defined or not a string`);
+    throw createError(400, "description is not defined or not a string");
   }
   if (ttnAppId) {
     if (typeof ttnAppId !== "string") {
-      throw createError(400, `ttnAppId is not a string`);
+      throw createError(400, "ttnAppId is not a string");
     }
   }
   if (city) {
     if (typeof city !== "string") {
-      throw createError(400, `city is not a string`);
+      throw createError(400, "city is not a string");
     }
   }
   const user = await prisma.user.findOne({ where: { id: userId } });

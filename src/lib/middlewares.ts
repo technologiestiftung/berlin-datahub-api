@@ -60,15 +60,14 @@ export const authCheck: AsyncMiddlewareFunction = async (
   response,
   next,
 ) => {
-  console.log(request.headers.authorization);
   if (!request.headers.authorization) {
     throw createError(401, `No credentials provided`);
   }
-  // console.log(request.headers.authorization);
-  // console.log("APP_SECRET", APP_SECRET);
+
   const token = request.headers.authorization.split(" ")[1];
 
   const decoded = verify(token, APP_SECRET);
+  // TODO: This might be unnecessary
   if (!decoded) {
     throw createError(404, `token invalid`);
   }

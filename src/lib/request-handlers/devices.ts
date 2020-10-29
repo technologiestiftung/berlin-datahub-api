@@ -34,7 +34,7 @@ export const postDevice: HandlerFunction = async (request, response) => {
   }
   if (description) {
     if (typeof description !== "string") {
-      throw createError(400, `description is defined but not a number`);
+      throw createError(400, `description is defined but not a string`);
     }
   }
   if (latitude) {

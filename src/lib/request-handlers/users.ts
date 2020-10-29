@@ -5,7 +5,7 @@ import { APP_SECRET } from "../envs";
 import { prisma } from "../prisma";
 import { createPayload } from "../utils";
 import createError from "http-errors";
-const tokenSignOpts: SignOptions = {
+export const tokenSignOpts: SignOptions = {
   algorithm: "HS256",
   // expiresIn: "7d",
 };
@@ -43,7 +43,6 @@ export const signup: HandlerFunction = async (request, response) => {
  */
 export const login: HandlerFunction = async (request, response) => {
   const { username, password } = request.body;
-  console.log(request.body);
   if (!username && typeof username !== "string") {
     throw createError(400, "username not provided or not a string");
   }

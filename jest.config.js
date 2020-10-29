@@ -5,4 +5,10 @@ const config = require("@inpyjamas/scripts/jest");
 module.exports = utlities.merge(config, {
   testEnvironment: path.join(__dirname, "prisma", "prisma-test-environment.js"),
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  collectCoverageFrom: [
+    "src/**/*.{ts,ts}",
+    "!src/index.ts",
+    "!src/types/**/*.ts",
+    "!src/test/**/*.ts",
+  ],
 });
