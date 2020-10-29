@@ -4,6 +4,11 @@ import { prisma } from "../prisma";
 import { createPayload } from "../utils";
 import createError from "http-errors";
 
+export const getProjectsById: HandlerFunction = async (_request, response) => {
+  const project = response.locals.project as Project;
+  response.json(createPayload({ project }));
+};
+
 export const getProjects: HandlerFunction = async (_request, response) => {
   const projects = await prisma.project.findMany({});
   response.json(createPayload({ projects }));

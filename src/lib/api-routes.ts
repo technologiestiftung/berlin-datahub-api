@@ -5,7 +5,11 @@ import {
   postDevice,
   getDeviceById,
 } from "./request-handlers/devices";
-import { getProjects, postProject } from "./request-handlers/projects";
+import {
+  getProjects,
+  getProjectsById,
+  postProject,
+} from "./request-handlers/projects";
 import {
   authCheck,
   deviceCheck,
@@ -44,6 +48,13 @@ router.post(
   asyncMiddlewareWrapper(authCheck),
   asyncWrapper(postProject),
 );
+router.get(
+  "/projects/:projectId",
+  generalLimiter,
+  asyncMiddlewareWrapper(projectCheck),
+  asyncWrapper(getProjectsById),
+);
+
 router.get(
   "/projects/:projectId/devices",
   generalLimiter,
