@@ -1,5 +1,7 @@
 jest.setTimeout(10000);
 process.env.APP_SECRET = "superdupersecret";
+// process.env.NODE_ENV = "test";
+process.env.LOGDNA_ACCOUNT = "123";
 const logger = {
   debug: jest.fn(),
   log: jest.fn(),
