@@ -1,77 +1,77 @@
-# berlin-datahub-api
+# Berlin IoT Hub API
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
 
-- [Berlin Data Hub Technology Stack](#berlin-data-hub-technology-stack)
-- [Posting Data](#posting-data)
-  - [Retrieve an access token](#retrieve-an-access-token)
-  - [Create Device](#create-device)
-  - [Post a Record to a Device](#post-a-record-to-a-device)
-- [Getting Data](#getting-data)
-  - [Devices](#devices)
+- [Berlin IoT Hub API](#berlin-iot-hub-api)
+  - [Berlin IoT Hub Technology Stack](#berlin-iot-hub-technology-stack)
+  - [Development](#development)
+    - [Prerequisites](#prerequisites)
+    - [Setup](#setup)
+    - [Work on it](#work-on-it)
+  - [Test](#test)
+  - [Deploy](#deploy)
+  - [API Interaction + Documentation](#api-interaction--documentation)
+  - [Docs](#docs)
 
 <!-- /code_chunk_output -->
 
-## Berlin Data Hub Technology Stack
+## Berlin IoT Hub Technology Stack
 
-The Berlin Data Hub consists of two components, namely: an RESTful API and a frontend. All of these components are administrated within their very own Repository stored in the (Technologiestiftung Berlin GitHub Account)[https://github.com/technologiestiftung].
+The Berlin IoT Hub consists of two components, namely: an RESTful API and a frontend. All of these components are administrated within their very own Repository stored in
 
-Following, the components are listet:
-
-- RESTful API: Typescript, ExpressJS, Prisma
-- frontend: React
-
-We use a PostgreSQL version 11 as database.
-
-![Technology Stack](./images/BerlinDataHubStack.jpg)
+- [github.com/technologiestiftung/berlin-datahub-api](https://github.com/technologiestiftung/berlin-datahub-api)
+- [github.com/technologiestiftung/berlin-iot-hub-frontend](https://github.com/technologiestiftung/berlin-iot-hub-frontend)
 
 
+![Technology Stack](images/berlin-IoT-hub-diagram.png)
 
-## Posting Data
+## Development
 
-This api provides some endpoints for posting data over http. You need an existing user to do that.
+The API is written in Typescript and uses Express.js + and Prisma. 
 
-### Retrieve an access token
+### Prerequisites
 
-```bash
-curl --location --request POST 'http://localhost:4000/api/login' \
---header 'Content-Type: application/json' \
---data-raw '{"username":"you",
-"password":"supersecret"}'
-```
-
-### Create Device
+- Node.js >= 12
+- Docker >= 19
+  
+### Setup
 
 ```bash
-curl --location --request POST 'http://localhost:4000/api/devices' \
---header 'Authorization: Bearer abc123' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "ttnDeviceId": "ping-01",
-    "ttnAppId": "ping"
-}'
+
+docker-compose up
+npm ci
 ```
 
-### Post a Record to a Device
+### Work on it
 
 ```bash
-curl --location --request POST 'http://localhost:4000/api/devices/1/records' \
---header 'Authorization: Bearer 123.abc.cad' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "value": 963,
-    "recordedAt": "2020-10-20T16:35:07.763Z"
-}'
-```
-
-## Getting Data
-
-### Devices
-
- ```bash
-curl --location --request GET 'http://localhost:4000/api/devices'
+# Assumes you habe a posstgres DB running
+npm run dev
 ```
 
 
+## Test
+
+Uses Jest. Prisma creates for each test run a sqlite DB. Currently this is fine. We might need to switch to a Postgres setup later on.
+
+```bash
+npm t
+```
+
+## Deploy
+
+The API is deployed to [render.com](https://render.com). You can find all definition in [render.yaml](render.yaml). Deploy via Infrastructure as Code
+
+## API Interaction + Documentation
+
+
+This api provides some endpoints for posting data over HTTP. You need an user account to do that. You can find many examples in the file [http-requests/api.http](http-requests/api.http). This file can be used with the [VSCode Rest Client Extension](https://github.com/Huachao/vscode-restclient).
+
+
+
+
+## Docs
+
+Docs are generated using [typedoc](http://typedoc.org/) and deployed to github pages.  
