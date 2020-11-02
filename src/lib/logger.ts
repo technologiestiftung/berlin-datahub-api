@@ -3,10 +3,11 @@ import logdnaWinston from "logdna-winston";
 import { LOGDNA_KEY, NODE_ENV } from "./envs";
 
 /**
+ * TODO: [DATAHUB-98] Find out why LOGDNA logger creates errors
  * A default logger. Since we are on render we use the LogDNA add-on
  * https://logdna.com/
  *
- * WE keep the old logger could around for now to be able to switch back.
+ * WE keep the old logger around for now to be able to switch back.
  */
 export const logger = createLogger({});
 const options = {

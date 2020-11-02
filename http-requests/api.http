@@ -1,9 +1,10 @@
 ### Variables
 @hostname = localhost
+@protocol =  http
 @port = 4000
 @mountPoint = api/v1
 @host = {{hostname}}:{{port}}
-@baseUrl = http://{{host}}/{{mountPoint}}
+@baseUrl = {{protocol}}://{{host}}/{{mountPoint}}
 
 # shoud be defined in .env file next to this one
 @token = Bearer {{$dotenv TOKEN}}
