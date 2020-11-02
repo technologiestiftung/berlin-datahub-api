@@ -7,6 +7,7 @@
 - [Berlin IoT Hub API](#berlin-iot-hub-api)
   - [Berlin IoT Hub Technology Stack](#berlin-iot-hub-technology-stack)
   - [Development](#development)
+    - [Environment Variables](#environment-variables)
     - [Prerequisites](#prerequisites)
     - [Setup](#setup)
     - [Work on it](#work-on-it)
@@ -30,6 +31,10 @@ The Berlin IoT Hub consists of two components, namely: an RESTful API and a fron
 ## Development
 
 The API is written in Typescript and uses Express.js + and Prisma. 
+
+### Environment Variables
+
+You can find an example `.env` file under [./prisma/env.example](./prisma/env.example). Make sure to obtain an [LogDNA Key](https://logdna.com/) to connect to your account. (You can get this by going to the addon section on render.com). 
 
 ### Prerequisites
 
@@ -60,18 +65,19 @@ Uses Jest. Prisma creates for each test run a sqlite DB. Currently this is fine.
 npm t
 ```
 
+
 ## Deploy
 
-The API is deployed to [render.com](https://render.com). You can find all definition in [render.yaml](render.yaml). Deploy via Infrastructure as Code
+The API is deployed to [render.com](https://render.com). You can find all definition in [render.yaml](render.yaml). Deploy via Infrastructure as Code. Don't forget to add your environment variables.
 
 ## API Interaction + Documentation
 
 
-This api provides some endpoints for posting data over HTTP. You need an user account to do that. You can find many examples in the file [http-requests/api.http](http-requests/api.http). This file can be used with the [VSCode Rest Client Extension](https://github.com/Huachao/vscode-restclient).
+This api provides some endpoints for posting data over HTTP. You need an user account to do that. You can find many examples in the file [http-requests/api.http](http-requests/api.http). This file can be used with the [VSCode Rest Client Extension](https://github.com/Huachao/vscode-restclient). Make sure to create your `.env` file there from the provided example under [./http-requests/env.example](./http-requests/env.example).
 
 
 
 
 ## Docs
 
-Docs are generated using [typedoc](http://typedoc.org/) and deployed to github pages.  
+Docs are generated using [typedoc](http://typedoc.org/) and deployed to [github pages](https://technologiestiftung.github.io/berlin-datahub-api/).  
