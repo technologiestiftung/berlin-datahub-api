@@ -1,7 +1,6 @@
 import createError from "http-errors";
 import { Device, Record } from "@prisma/client";
 import { createPayload } from "../utils";
-import { TTNHTTPPayload } from "../../common/interfaces";
 import { prisma } from "../prisma";
 import { HandlerFunction } from "../../common/types";
 import { logger } from "../logger";

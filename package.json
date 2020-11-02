@@ -10,6 +10,7 @@
     "prebuild": "prisma generate",
     "build": "tsc -p .",
     "typedoc": "typedoc",
+    "posttypedoc": "touch docs/.nojekyll",
     "prisma:migration:save": "prisma migrate save --experimental",
     "prisma:migration:up": "prisma migrate up --experimental"
   },
