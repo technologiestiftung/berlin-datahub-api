@@ -5,6 +5,7 @@ const config = require("@inpyjamas/scripts/jest");
 module.exports = utlities.merge(config, {
   testEnvironment: path.join(__dirname, "prisma", "prisma-test-environment.js"),
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  // TODO: [DATAHUB-99] Increase test coverage to at least 75%
   coverageThreshold: {
     global: {
       branches: 65,
