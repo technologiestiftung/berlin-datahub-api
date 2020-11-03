@@ -1,6 +1,6 @@
 {
   "name": "berlin-datahub-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An Express REST API for the berlin datahub project",
   "main": "dist/index.js",
   "scripts": {
