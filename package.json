@@ -12,7 +12,8 @@
     "typedoc": "typedoc",
     "posttypedoc": "touch docs/.nojekyll",
     "prisma:migration:save": "prisma migrate save --experimental",
-    "prisma:migration:up": "prisma migrate up --experimental"
+    "prisma:migration:up": "prisma migrate up --experimental",
+    "lint": "npx eslint \"./src/*\""
   },
   "author": "Fabian Morón Zirfas <fabianmoronzirfas@protonmail.ch> (https://fabianmoronzirfas.me)",
   "license": "MIT",
