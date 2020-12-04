@@ -83,6 +83,12 @@
 							<li><a href="#deploy">Deploy</a></li>
 							<li><a href="#api-interaction--documentation">API Interaction + Documentation</a></li>
 							<li><a href="#docs">Docs</a></li>
+							<li><a href="#how-to-connect-a-ttn-application-with-iot-data-hub">HOW TO: connect a TTN application with IoT Data Hub</a><ul>
+									<li><a href="#step-1-sensor">Step 1: sensor</a></li>
+									<li><a href="#step-2-payload-aka-decoder-function">Step 2: payload aka. decoder function</a></li>
+									<li><a href="#step-3-http-integration">Step 3: HTTP Integration</a></li>
+								</ul>
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -99,11 +105,11 @@
 				<a href="#development" id="development" style="color: inherit; text-decoration: none;">
 					<h2>Development</h2>
 				</a>
-				<p>The API is written in Typescript and uses Express.js + and Prisma. </p>
+				<p>The API is written in Typescript and uses Express.js + and Prisma.</p>
 				<a href="#environment-variables" id="environment-variables" style="color: inherit; text-decoration: none;">
 					<h3>Environment Variables</h3>
 				</a>
-				<p>You can find an example <code>.env</code> file under <a href="./prisma/env.example">./prisma/env.example</a>. Make sure to obtain an <a href="https://logdna.com/">LogDNA Key</a> to connect to your account. (You can get this by going to the addon section on render.com). </p>
+				<p>You can find an example <code>.env</code> file under <a href="./prisma/env.example">./prisma/env.example</a>. Make sure to obtain an <a href="https://logdna.com/">LogDNA Key</a> to connect to your account. (You can get this by going to the addon section on render.com).</p>
 				<a href="#prerequisites" id="prerequisites" style="color: inherit; text-decoration: none;">
 					<h3>Prerequisites</h3>
 				</a>
@@ -138,7 +144,57 @@ npm run dev</code></pre>
 				<a href="#docs" id="docs" style="color: inherit; text-decoration: none;">
 					<h2>Docs</h2>
 				</a>
-				<p>Docs are generated using <a href="http://typedoc.org/">typedoc</a> and deployed to <a href="https://technologiestiftung.github.io/berlin-datahub-api/">github pages</a>.  </p>
+				<p>Docs are generated using <a href="http://typedoc.org/">typedoc</a> and deployed to <a href="https://technologiestiftung.github.io/berlin-datahub-api/">github pages</a>.</p>
+				<a href="#how-to-connect-a-ttn-application-with-iot-data-hub" id="how-to-connect-a-ttn-application-with-iot-data-hub" style="color: inherit; text-decoration: none;">
+					<h2>HOW TO: connect a TTN application with IoT Data Hub</h2>
+				</a>
+				<p>If you want to connect you very own TTN application and their devices with the IoT Data Hub you&#39;ll need:</p>
+				<ol>
+					<li>a sensor which measures something</li>
+					<li>a proper payload aka. decoder function</li>
+					<li>to activate the official TTN HTTP Integration and configurate it</li>
+				</ol>
+				<a href="#step-1-sensor" id="step-1-sensor" style="color: inherit; text-decoration: none;">
+					<h3>Step 1: sensor</h3>
+				</a>
+				<p>This is the most obvious step and propably comes by default if you already found your way to our repo. To show the data which was measured by your sensors in the IoT Data Hub, of course, you&#39;ll need a sensor which already measures some data e.g. temperature, CO2, dezibel, pressure etc.., first.</p>
+				<a href="#step-2-payload-aka-decoder-function" id="step-2-payload-aka-decoder-function" style="color: inherit; text-decoration: none;">
+					<h3>Step 2: payload aka. decoder function</h3>
+				</a>
+				<p>So far, our API only can handle <strong>one record</strong> per device. In order to handle the incoming payloads in a way our API is aware of what is happening, you simply have to update the payload aka. decoder function in your very own TTN application. You measrued data, e.g. CO2 value, needs to be returned as &quot;value&quot; otherwise our API wont recognize it. Please see the following example for a simple CO2-sensor below:</p>
+				<pre><code class="language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Decoder</span>(<span class="hljs-params">bytes</span>) </span>{
+  <span class="hljs-keyword">var</span> myCO2;
+  <span class="hljs-comment">//if no value was measured return 0</span>
+  <span class="hljs-keyword">if</span> (!bytes[<span class="hljs-number">0</span>]) {
+    myCO2 = <span class="hljs-number">0</span>;
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-comment">//cuz co2 sensors usually delivery records higher than 255 we look at 2 bytes of the uplink</span>
+    myCO2 = (bytes[<span class="hljs-number">1</span>] &lt;&lt; <span class="hljs-number">8</span>) | bytes[<span class="hljs-number">0</span>];
+  }
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">now</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toISOString(),
+    <span class="hljs-attr">value</span>: myCO2,
+  };
+}</code></pre>
+				<p>You can simply test your decoder function by simulating an uplink. In our case we simply used a payload with the hexadecimal values of <strong>01 05</strong>. Our decoder function now returns us a decimal value of 1281. Time to open the window and let some fresh air in!</p>
+				<p><img src="images/HowTo_payloadFormat.png" alt="Payload Format"></p>
+				<a href="#step-3-http-integration" id="step-3-http-integration" style="color: inherit; text-decoration: none;">
+					<h3>Step 3: HTTP Integration</h3>
+				</a>
+				<p>The IoT Data Hub uses a RESTful API and therefore can be used by any device which is communicating over HTTP. Luckily, the TTN Community already provides a very powerful built-in integration to wire the incoming payload messages (MQTT) with the HTTP protocol. To use this HTTP integration for the API, simply follow these steps:</p>
+				<ol>
+					<li>navigate to the overview of your TTN application</li>
+					<li>in the menu to the top right click on <strong>Integrtions</strong></li>
+					<li>choose <strong>HTTP Integration</strong> to activate it</li>
+					<li>enter a process ID e.g. berlin-datahub-co2</li>
+					<li>enter the URL: <a href="https://berlin-datahub-api.onrender.com/api/ttn">https://berlin-datahub-api.onrender.com/api/ttn</a></li>
+					<li>enter Method: POST</li>
+					<li>enter &quot;Bearer&quot; + your very own Authorization token (you&#39;&#39;ll get this from the admin of the IoT Data Hub by request --&gt; just send us a ping)</li>
+				</ol>
+				<p><img src="images/HowTo_HTTPintegration.png" alt="Payload Format"></p>
+				<p>By finally setting up the HTTP integration, your part is done and everything should work as expected. Yeah. However, if you&#39;re going to test the API be simulating some uplinks, you&#39;ll will notice that no record and even no application will appear in the IoT Data Hub Frontend.</p>
+				<p>Don&#39;t worry! This is because we have to add your application and your sending device manually first. So: please don&#39;t hesitate to get in contact and tell us your AppID &amp; the ID of your device(s) which is/are sending. We will send you your very own Authorization token and configure our DB so you can finally see your sensor data <a href="https://berlin-iot-hub.netlify.app/">our Frontend</a></p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
