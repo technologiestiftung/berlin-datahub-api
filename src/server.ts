@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 server.get(
-  ["/", "healthcheck", "/api/healthcheck", "/api/v1/healthcheck"],
+  ["/", "/healthcheck", "/api/healthcheck", "/api/v1/healthcheck"],
   generalLimiter,
   asyncWrapper(status),
 );
